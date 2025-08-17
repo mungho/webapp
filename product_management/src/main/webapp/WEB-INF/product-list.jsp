@@ -86,7 +86,17 @@
                         <td>${product.price}</td>
                         <td>${product.stock}</td>
                         <td>
-                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editProductModal">Edit</button>
+<%--                            <button type="button"--%>
+<%--                                    class="btn btn-primary btn-sm edit-btn"--%>
+<%--                                    data-name="${product.name}"--%>
+<%--                                    data-price="${product.price}"--%>
+<%--                                    data-stock="${product.stock}"--%>
+<%--                                    data-bs-toggle="modal"--%>
+<%--                                    data-bs-target="#editProductModal">--%>
+<%--                                Edit--%>
+<%--                            </button>--%>
+
+                            <button onclick="updateProduct('${product.id}', '${product.name}', '${product.price}', '${product.stock}')" type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editProductModal">Edit</button>
                             <button onclick="deleteProduct('${product.id}')" type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteProductModal">Delete</button>
                         </td>
                     </tr>
@@ -106,25 +116,26 @@
             <div class="modal-body">
                 <form id="editProductForm" action="/product-list" method="post">
                     <input type="hidden" name="action" value="edit">
+                    <input type="hidden" name="id" id="editProductIdModel">
                     <table class="w-100">
                         <tr>
                             <td class="col-4">Product's Name</td>
-                            <td class="col-8"><input name="name" type="text" class="form-control"></td>
+                            <td class="col-8"><input name="name" type="text" class="form-control" id="editProductNameModal"></td>
                         </tr>
                         <tr>
                             <td>Price</td>
-                            <td><input name="price" type="number" class="form-control"></td>
+                            <td><input name="price" type="number" class="form-control" id="editProductPriceModal" step="0.01"></td>
                         </tr>
                         <tr>
                             <td>Stock</td>
-                            <td><input name="stock" type="number" class="form-control"></td>
+                            <td><input name="stock" type="number" class="form-control" id="editProductStockModal"></td>
                         </tr>
                     </table>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Save changes</button>
             </div>
         </div>
     </div>
@@ -157,7 +168,14 @@
 <script>
     function deleteProduct(id){
         document.getElementById("deleteProductId").value = id;
-        document.getElementById("deletePreviewId").innerHTML = id;
+        document.getElementById("deletePreviewId").value = id;
+    }
+
+    function updateProduct(id, name, price, stock) {
+        document.getElementById("editProductIdModel").value = id;
+        document.getElementById("editProductNameModal").value = name;
+        document.getElementById("editProductPriceModal").value = price;
+        document.getElementById("editProductStockModal").value = stock;
     }
 </script>
 </html>

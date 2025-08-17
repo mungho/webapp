@@ -34,7 +34,14 @@ public class ProductRepository implements IProductRepository{
     }
 
     @Override
-    public boolean updateProduct(Product product) {
+    public boolean updateProduct(int id, String name, double price, int stock) {
+        Product product = getProductByID(id);
+        if (product.getName() != null && product.getPrice() > 0 && product.getStock() >= 0) {
+            product.setName(name);
+            product.setPrice(price);
+            product.setStock(stock);
+            return true;
+        }
         return false;
     }
 

@@ -15,8 +15,8 @@ public class ProductService implements IProductService{
     }
 
     @Override
-    public boolean updateProduct(Product product) {
-        return false;
+    public boolean updateProduct(int id, String name, double price, int stock) {
+        return productRepository.updateProduct(id, name, price, stock);
     }
 
     @Override

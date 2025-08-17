@@ -44,6 +44,14 @@ public class ProductController extends HttpServlet {
 //                boolean ok = (id > 0) && deleteProduct(id);
 //                resp.sendRedirect(req.getContextPath() + "/product-list?deleted=" + (ok ? "1" : "0"));
                 break;
+            case "edit":
+                int prodId = Integer.parseInt(req.getParameter("id"));
+                String name = req.getParameter("name");
+                double price = Float.parseFloat(req.getParameter("price"));
+                int stock = Integer.parseInt(req.getParameter("stock"));
+                updateProduct(prodId, name, price, stock);
+                resp.sendRedirect(req.getContextPath() + "/product-list");
+
         }
     }
 
@@ -65,5 +73,12 @@ public class ProductController extends HttpServlet {
            return productService.deleteProduct(id);
        }
        return false;
+    }
+
+    public boolean updateProduct(int id, String name, double price, int stock){
+        if (id > 0){
+            return productService.updateProduct(id, name, price, stock);
+        }
+        return false;
     }
 }
