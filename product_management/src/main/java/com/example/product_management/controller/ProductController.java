@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet(name = "productController", value = "/product-list")
 public class ProductController extends HttpServlet {
@@ -18,13 +19,31 @@ public class ProductController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setAttribute("productList", productService.getAllProducts());
+        req.setCharacterEncoding("UTF-8");
+        resp.setCharacterEncoding("UTF-8");
+        resp.setContentType("text/html; charset=UTF-8");
+
+        String keyword = req.getParameter("search");
+        List<Product> products;
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            products = productService.getProductByName(keyword);
+        } else {
+            products = productService.getAllProducts();
+        }
+
+        req.setAttribute("productList", products);
+
         RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/product-list.jsp");
-        dispatcher.forward(req,resp);
+        dispatcher.forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
+        resp.setCharacterEncoding("UTF-8");
+        resp.setContentType("text/html; charset=UTF-8");
+
         String action = req.getParameter("action");
         switch (action) {
             case "add":
@@ -51,7 +70,6 @@ public class ProductController extends HttpServlet {
                 int stock = Integer.parseInt(req.getParameter("stock"));
                 updateProduct(prodId, name, price, stock);
                 resp.sendRedirect(req.getContextPath() + "/product-list");
-
         }
     }
 
@@ -80,5 +98,9 @@ public class ProductController extends HttpServlet {
             return productService.updateProduct(id, name, price, stock);
         }
         return false;
+    }
+
+    public List<Product> searchProduct(String name){
+        return productService.getProductByName(name);
     }
 }
