@@ -62,9 +62,16 @@
     <div class="row mb-4">
 
         <div class="col">
-                <form class="d-flex" role="search">
-                    <input class="form-control" type="search" placeholder="Search" aria-label="Search"/>
-                </form>
+            <form class="d-flex" role="search" action="${pageContext.request.contextPath}/product-list" method="get">
+                <input class="form-control"
+                       type="search"
+                       placeholder="Search"
+                       aria-label="Search"
+                       name="search"
+                       value="${param.search}" />
+                <button type="submit" class="btn btn-primary ms-2">Search</button>
+            </form>
+
         </div>
     </div>
     <div class="row mb-4">
@@ -177,5 +184,7 @@
         document.getElementById("editProductPriceModal").value = price;
         document.getElementById("editProductStockModal").value = stock;
     }
+
+
 </script>
 </html>
