@@ -6,6 +6,16 @@ public class ProductDTO {
     private double price;
     private int stock;
     private String productType;
+    private int typeId;
+
+    public ProductDTO(int id, String name, double price, int stock, String productType, int typeId) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.stock = stock;
+        this.productType = productType;
+        this.typeId = typeId;
+    }
 
     public ProductDTO(int id, String name, double price, int stock, String productType) {
         this.id = id;
@@ -52,5 +62,9 @@ public class ProductDTO {
 
     public void setProductType(String productType) {
         this.productType = productType;
+    }
+
+    public int getTypeId() {
+        return typeId;
     }
 }

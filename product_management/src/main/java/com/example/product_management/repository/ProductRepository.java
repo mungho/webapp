@@ -1,6 +1,7 @@
 package com.example.product_management.repository;
 
 import com.example.product_management.model.Product;
+import com.example.product_management.model.ProductDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,60 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductRepository implements IProductRepository{
-    private final String SELECT_ALL = "select * from products;";
-    private final String INSERT_PRODUCT = "INSERT INTO products(name, price, stock) VALUES (?, ?, ?);";
+    private final String SELECT_ALL = "SELECT p.id, p.name, p.price, p.stock, pt.name AS type_name FROM products p LEFT JOIN product_type pt ON p.type_id = pt.id;";
+    private final String INSERT_PRODUCT = "INSERT INTO products(name, price, stock, type_id) VALUES (?, ?, ?,?);";
     private final String DELETE_PRODUCT = "DELETE FROM products WHERE id = ?;";
-    private final String UPDATE_PRODUCT = "UPDATE products SET name= ?, price = ?, stock = ? WHERE id = ?;";
-    private final String SELECT_BY_NAME = "SELECT * FROM products WHERE name LIKE ?;";
-
-
-//    @Override
-//    public boolean addProduct(Product product)
-//
-//        if (product.getName() != null && product.getPrice() > 0 && product.getStock() >= 0) {
-//            productList.add(product);
-//            return true;
-//        } else {
-//            return false;
-//        }
-//
-//    }
-//
-//    @Override
-//    public boolean updateProduct(int id, String name, double price, int stock) {
-//        Product product = getProductByID(id);
-//        if (product.getName() != null && product.getPrice() > 0 && product.getStock() >= 0) {
-//            product.setName(name);
-//            product.setPrice(price);
-//            product.setStock(stock);
-//            return true;
-//        }
-//        return false;
-//    }
-//
-//    @Override
-//    public boolean deleteProduct(int id) {
-//        if (getProductByID(id) == null) {
-//            return false;
-//        } else {
-//            productList.remove(getProductByID(id));
-//            return true;
-//        }
-//    }
-//
-//    @Override
-//    public List<Product> getProductByName(String name) {
-//        return productList;
-//    }
-//
-//    public Product getProductByID(int id) {
-//        for (Product product : productList) {
-//            if(product.getId() == id) {
-//                return product;
-//            }
-//        }
-//        return null;
-//    }
+    private final String UPDATE_PRODUCT = "UPDATE products SET name= ?, price = ?, stock = ?, type_id = ? WHERE id = ?;";
+    private final String SELECT_BY_NAME = "SELECT p.id, p.name, p.price, p.stock, pt.name AS type_name FROM products p LEFT JOIN product_type pt ON p.type_id = pt.id WHERE p.name LIKE ?;";
 
     @Override
     public boolean addProduct(Product product) {
@@ -72,6 +24,7 @@ public class ProductRepository implements IProductRepository{
             preparedStatement.setString(1, product.getName());
             preparedStatement.setDouble(2, product.getPrice());
             preparedStatement.setInt(3, product.getStock());
+            preparedStatement.setInt(4, product.getTypeId());
 
             int rowsInserted = preparedStatement.executeUpdate();
             return rowsInserted > 0;
@@ -84,13 +37,13 @@ public class ProductRepository implements IProductRepository{
 
 
     @Override
-    public boolean updateProduct(int id, String name, double price, int stock) {
+    public boolean updateProduct(int id, String name, double price, int stock, int typeId) {
         try(Connection connection = BaseRepository.getConnectDB();
         PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_PRODUCT)) {
             preparedStatement.setString(1, name);
             preparedStatement.setDouble(2, price);
             preparedStatement.setInt(3, stock);
-            preparedStatement.setInt(4, id);
+            preparedStatement.setInt(4, typeId);
             int rowsUpdated = preparedStatement.executeUpdate();
             return rowsUpdated > 0;
         } catch (SQLException e) {
@@ -114,8 +67,8 @@ public class ProductRepository implements IProductRepository{
     }
 
     @Override
-    public List<Product> getProductByName(String name) {
-        List<Product> productList = new ArrayList<>();
+    public List<ProductDTO> getProductByName(String name) {
+        List<ProductDTO> productList = new ArrayList<>();
 
         try(Connection connection = BaseRepository.getConnectDB();
         PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BY_NAME)) {
@@ -124,11 +77,12 @@ public class ProductRepository implements IProductRepository{
 
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
-                String pname = resultSet.getString("name");
-                double price = resultSet.getDouble("price");
-                int stock = resultSet.getInt("stock");
+                String pName = resultSet.getString("name");
+                String pType = resultSet.getString("type_name");
+                double pPrice = resultSet.getDouble("price");
+                int pStock = resultSet.getInt("stock");
 
-                productList.add(new Product(id, pname, price, stock));
+                productList.add(new ProductDTO(id, pName, pPrice, pStock, pType));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -137,8 +91,8 @@ public class ProductRepository implements IProductRepository{
     }
 
     @Override
-    public List<Product> getAllProducts() {
-        List<Product> productList = new ArrayList<>();
+    public List<ProductDTO> getAllProducts() {
+        List<ProductDTO> productList = new ArrayList<>();
 
         try(Connection connection = BaseRepository.getConnectDB();) {
             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL);
@@ -146,9 +100,10 @@ public class ProductRepository implements IProductRepository{
             while (resultSet.next()){
                 int id = Integer.parseInt(resultSet.getString("id"));
                 String name = resultSet.getString("name");
+                String type = resultSet.getString("type_name");
                 double price = Double.parseDouble(resultSet.getString("price"));
                 int stock = Integer.parseInt(resultSet.getString("stock"));
-                productList.add(new Product(id, name, price, stock));
+                productList.add(new ProductDTO(id, name, price, stock, type));
             }
         } catch (SQLException e) {
             System.out.println("lỗi query");

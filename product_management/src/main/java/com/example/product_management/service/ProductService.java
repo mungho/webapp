@@ -1,6 +1,7 @@
 package com.example.product_management.service;
 
 import com.example.product_management.model.Product;
+import com.example.product_management.model.ProductDTO;
 import com.example.product_management.repository.IProductRepository;
 import com.example.product_management.repository.ProductRepository;
 
@@ -15,8 +16,8 @@ public class ProductService implements IProductService{
     }
 
     @Override
-    public boolean updateProduct(int id, String name, double price, int stock) {
-        return productRepository.updateProduct(id, name, price, stock);
+    public boolean updateProduct(int id, String name, double price, int stock,int typeId) {
+        return productRepository.updateProduct(id, name, price, stock, typeId);
     }
 
     @Override
@@ -25,12 +26,12 @@ public class ProductService implements IProductService{
     }
 
     @Override
-    public List<Product> getProductByName(String name) {
+    public List<ProductDTO> getProductByName(String name) {
         return productRepository.getProductByName(name);
     }
 
     @Override
-    public List<Product> getAllProducts() {
+    public List<ProductDTO> getAllProducts() {
         return productRepository.getAllProducts();
     }
 }
