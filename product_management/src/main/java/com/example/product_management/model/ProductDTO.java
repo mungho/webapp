@@ -1,41 +1,25 @@
 package com.example.product_management.model;
 
-public class Product {
-    private static int idCounter = 1;
+public class ProductDTO {
     private int id;
     private String name;
     private double price;
     private int stock;
-    private int typeId;
+    private String productType;
 
-    public Product(int id, String name, double price, int stock, int typeId) {
+    public ProductDTO(int id, String name, double price, int stock, String productType) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.stock = stock;
-        this.typeId = typeId;
+        this.productType = productType;
     }
 
-    public Product(int id, String name, double price, int stock) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.stock = stock;
-    }
-
-    public Product(String name, double price, int stock) {
-        this.id = idCounter++;
-        this.name = name;
-        this.price = price;
-        this.stock = stock;
+    public ProductDTO() {
     }
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -60,5 +44,13 @@ public class Product {
 
     public void setStock(int stock) {
         this.stock = stock;
+    }
+
+    public String getProductType() {
+        return productType;
+    }
+
+    public void setProductType(String productType) {
+        this.productType = productType;
     }
 }
